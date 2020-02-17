@@ -7,30 +7,50 @@ var index = 0;
 var test;
 var webcam;
 // Load the image model and setup the webcam
+
+/**
+  @param {String} URL -- link to teachable machines model
+  @param {Number} index -- automatically assigned via factory
+  @param {boolean} enableDOM -- if this create visualisation
+  @return {class} instance of tfModel
+  */
+
 class tfModel {
   // model;
   // webcam;
   // maxPredictions;
-  constructor(URL, index) {
+  constructor(URL, index, enableDOM) {
     this.URL = URL;
     this.index = index;
     this.model;
     this.maxPredictions;
+    this.enableDOM = enableDOM;
     this.init();
   }
   async init(URL) {
+    console.log('DOM creation ' + this.enableDOM);
     var modelURL = this.URL + 'model.json';
     var metadataURL = this.URL + 'metadata.json';
+
     try {
-      $.ajax({
-        type: 'GET',
-        url: metadataURL,
-        data: 'data',
-        dataType: 'json',
-        success: function(response) {
-          document.getElementById('label-header-' + index).innerHTML = response.modelName;
-        }
-      });
+      if (this.enableDOM) {
+        $.ajax({
+          type: 'GET',
+          url: metadataURL,
+          data: 'data',
+          dataType: 'json',
+          success: function(response) {
+            document.getElementById('label-header-' + index).innerHTML = response.modelName;
+          }
+        });
+      } else {
+        $.ajax({
+          type: 'GET',
+          url: metadataURL,
+          data: 'data',
+          dataType: 'json'
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -40,13 +60,14 @@ class tfModel {
     // Note: the pose library adds "tmImage" object to your window (window.tmImage)
     this.model = await tmImage.load(modelURL, metadataURL);
     this.maxPredictions = this.model.getTotalClasses();
-
     window.requestAnimationFrame(this.loop.bind(this));
     if (this.index == 0) {
       // append elements to the DOM
       document.getElementById('webcam-container-' + this.index).appendChild(webcam.canvas);
     }
-    await this.createDOM();
+    if (this.enableDOM) {
+      await this.createDOM();
+    }
     ++index;
   }
 
@@ -73,12 +94,28 @@ class tfModel {
       .children()
       .css('background-color', 'red');
   }
+
   async loop() {
     webcam.update(); // update the webcam frame
-    await this.predict();
+    if (this.enableDOM) {
+      await this.predict();
+    } else {
+      await this.predictClassOnly().then(index => {
+        //
+        // was passier wenn die 90% überschritten werden
+        //
+        console.log(index);
+        //
+        //
+        //
+        //
+        //
+        //
+        //
+      });
+    }
     window.requestAnimationFrame(this.loop.bind(this));
   }
-
   // run the webcam image through the image model
   async predict() {
     // predict can take in an image, video or canvas html element
@@ -91,6 +128,21 @@ class tfModel {
       $('#label-container-' + this.index + ' div .bar-container')
         .children('.' + i)
         .css(styles);
+    }
+  }
+  // NOTE for MOCK
+  async predictClassOnly() {
+    const prediction = await this.model.predict(webcam.canvas);
+    for (let i = 0; i < this.maxPredictions; i++) {
+      const className = prediction[i].className;
+      const classPrediction = prediction[i].probability.toFixed(2);
+      if (classPrediction > 0.8) {
+        //
+        return '' + i + className;
+      } else {
+        // wenn nix über 90 % is
+        return 0;
+      }
     }
   }
 }
@@ -117,29 +169,37 @@ async function webcamSetup() {
   let height;
   width = parseInt($('.webcam-wrapper').css('width'));
   height = parseInt($('.webcam-wrapper').css('height'));
+  console.log(height, width);
   const flip = false; // whether to flip the webcam
   webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
   await webcam.setup(); // request access to the webcam
   await webcam.play();
 }
-async function modelFactory(URL) {
-  await createSetup();
+async function modelFactory(URL, enableDOM) {
+  if (enableDOM) {
+    await createSetup();
+  }
   if (index == 0) {
     await webcamSetup();
   }
-  new tfModel(URL, index);
+  new tfModel(URL, index, enableDOM);
 }
+// for testing
 async function addModelUrl() {
   let URL = $('#modelLink').val();
   if (validURL(URL)) {
-    await modelFactory(URL);
+    await modelFactory(URL, true);
   } else {
     alert(URL + ' is not a valid url');
   }
 }
-async function mockAddModels(URL) {
+/**
+  @param {String} URL -- link to teachable machines model
+  @param {boolean} enableDOM -- true = create visualisation false = only prediction
+  */
+async function addModel(URL, enableDOM) {
   if (validURL(URL)) {
-    await modelFactory(URL);
+    await modelFactory(URL, enableDOM);
   } else {
     alert(URL + ' is not a valid url');
   }
@@ -163,11 +223,3 @@ function componentToHex(c) {
   var hex = c.toString(16);
   return hex.length == 1 ? '0' + hex : hex;
 }
-$(document).ready(function() {
-  setTimeout(() => {
-    console.log('load 2nd model');
-    mockAddModels('https://teachablemachine.withgoogle.com/models/SRvgc7nT/');
-  }, 5000);
-  console.log('load 1 model');
-  mockAddModels('https://teachablemachine.withgoogle.com/models/Ia0xXh8I/');
-});
