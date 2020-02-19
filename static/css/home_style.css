@@ -1,19 +1,27 @@
-.fullWrapper{
+.fullWrapper {
   background-color: black;
   height: 100vh;
   width: 100%;
 }
 .streamWrapper {
   color: aliceblue;
+  position: fixed;
+  top: 50%;
+  transform: translate(10%, -50%);
 }
 .webcam-wrapper {
-  width: 456px;
-  height: 543px;
+  width: 1280px;
+  height: 780px;
+  border: solid whitesmoke;
+  box-shadow: 0 0 2.5em whitesmoke;
+  z-index: 1;
 }
 .particlehead {
-  position: absolute; 
-  left: 0; 
-  top: 0; 
+  float: right;
   z-index: 0;
   background-color: transparent;
+  height: 90%;
+  width: 40vw;
+  top: 50%;
+  transform: translate(0%, 10%);
 }
