@@ -1,87 +1,77 @@
 $(document).ready(function() {
+  var face;
 
-var face;
+  var site = site || {};
+  site.window = $(window);
+  site.document = $(document);
+  site.Width = $('.particlehead').width();
+  site.Height = $('.particlehead').height();
 
-var site = site || {};
-site.window = $(window);
-site.document = $(document);
-site.Width = site.window.width()-10;
-site.Height = site.window.height()-10;
+  var Background = function() {};
 
-var Background = function() {
-
-};
-
-Background.headparticle = function() {   
-
-   if ( !Modernizr.webgl ) {
+  Background.headparticle = function() {
+    if (!Modernizr.webgl) {
       alert('Your browser doesnt support WebGL');
-   }
+    }
 
-   var camera, scene, renderer;
+    var camera, scene, renderer;
 
-   var mouseX = 0, mouseY = 0;
-   var p;
+    var mouseX = 0,
+      mouseY = 0;
+    var p;
 
-   var windowHalfX = site.Width / 2;
-   var windowHalfY = site.Height / 2;
+    var windowHalfX = site.Width / 2;
+    var windowHalfY = site.Height / 2;
 
-   Background.camera = new THREE.PerspectiveCamera( 35, site.Width / site.Height, 1, 2000 );
-   Background.camera.position.z = 350;
+    Background.camera = new THREE.PerspectiveCamera(35, site.Width / site.Height, 1, 2000);
+    Background.camera.position.z = 350;
 
-   // scene
-   Background.scene = new THREE.Scene();
-   
-   // texture
-   var manager = new THREE.LoadingManager();
-   manager.onProgress = function ( item, loaded, total ) {
+    // scene
+    Background.scene = new THREE.Scene();
+
+    // texture
+    var manager = new THREE.LoadingManager();
+    manager.onProgress = function(item, loaded, total) {
       //console.log('webgl, twice??');
       //console.log( item, loaded, total );
-   };
+    };
 
+    // particles
+    var p_geom = new THREE.Geometry();
+    var p_material = new THREE.ParticleBasicMaterial({
+      color: 0xffffff,
+      size: 1.5
+    });
 
-   // particles
-   var p_geom = new THREE.Geometry();
-   var p_material = new THREE.ParticleBasicMaterial({
-      color: 0xFFFFFF,
-      size: 0.75
-   });
+    // model
+    var loader = new THREE.OBJLoader(manager);
+    loader.load('/static/models/oldstoll.obj', function(object) {
+      object.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          // child.material.map = texture;
 
-   // model
-   var loader = new THREE.OBJLoader( manager );
-   loader.load( '/static/models/oldstoll.obj', function ( object ) {
+          var scale = 24;
 
-      object.traverse( function ( child ) {
-
-         if ( child instanceof THREE.Mesh ) {
-
-            // child.material.map = texture;
-
-            var scale = 16;
-
-            $(child.geometry.vertices).each(function() {
-               p_geom.vertices.push(new THREE.Vector3(this.x * scale, this.y * scale, this.z * scale));
-            })
-         }
+          $(child.geometry.vertices).each(function() {
+            p_geom.vertices.push(new THREE.Vector3(this.x * scale, this.y * scale, this.z * scale));
+          });
+        }
       });
 
-      Background.scene.add(p)
-   });
+      Background.scene.add(p);
+    });
 
-   p = new THREE.ParticleSystem(
-      p_geom,
-      p_material
-   );
+    p = new THREE.ParticleSystem(p_geom, p_material);
 
-   Background.renderer = new THREE.WebGLRenderer({ alpha: true });
-   Background.renderer.setSize( site.Width, site.Height );
-   Background.renderer.setClearColor(0x000000, 0);
+    Background.renderer = new THREE.WebGLRenderer({ alpha: true });
+    Background.renderer.setSize(site.Width, site.Height);
+    Background.renderer.setClearColor(0x000000, 0);
 
-   $('.particlehead').append(Background.renderer.domElement);
-   $('.particlehead').on('mousemove', onDocumentMouseMove);
-   site.window.on('resize', onWindowResize);
+    $('.particlehead').append(Background.renderer.domElement);
+    $(document).on('mousemove', onDocumentMouseMove);
+    $(window).on('resize', onWindowResize);
 
-   function onWindowResize() {
+    function onWindowResize() {
       windowHalfX = site.Width / 2;
       windowHalfY = site.Height / 2;
       //console.log(windowHalfX);
@@ -89,36 +79,34 @@ Background.headparticle = function() {
       Background.camera.aspect = site.Width / site.Height;
       Background.camera.updateProjectionMatrix();
 
-      Background.renderer.setSize( site.Width, site.Height );
-   }
+      Background.renderer.setSize(site.Width, site.Height);
+    }
 
-   function onDocumentMouseMove( event ) {
-      mouseX = ( event.clientX - windowHalfX ) / 2;
-      mouseY = ( event.clientY - windowHalfY ) / 2;
-   }
+    function onDocumentMouseMove(event) {
+      mouseX = (event.clientX - windowHalfX) / 2;
+      mouseY = (event.clientY - windowHalfY) / 2;
+    }
 
-   Background.animate = function() { 
-
+    Background.animate = function() {
       Background.ticker = TweenMax.ticker;
-      Background.ticker.addEventListener("tick", Background.animate);
+      Background.ticker.addEventListener('tick', Background.animate);
 
       render();
-   }
+    };
 
-   function render() {
-      Background.camera.position.x += ( -(mouseX) - Background.camera.position.x );
-      Background.camera.position.y += ( (mouseY) - Background.camera.position.y );
+    function render() {
+      Background.camera.position.x += -mouseX * 0.5 - Background.camera.position.x + 300;
+      Background.camera.position.y += mouseY - Background.camera.position.y;
 
-      Background.camera.lookAt( Background.scene.position );
+      Background.camera.lookAt(Background.scene.position);
 
-      Background.renderer.render( Background.scene, Background.camera );
-   }
+      Background.renderer.render(Background.scene, Background.camera);
+    }
 
-   render();
+    render();
 
-   Background.animate();
-};
+    Background.animate();
+  };
 
-
-Background.headparticle();
+  Background.headparticle();
 });
