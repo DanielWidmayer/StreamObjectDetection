@@ -138,7 +138,7 @@ class tfModel {
       const classPrediction = prediction[i].probability.toFixed(2);
       if (classPrediction > 0.8) {
         //
-        return '' + i + className;
+        return i;
       } else {
         // wenn nix über 90 % is
         return 0;
@@ -171,7 +171,7 @@ async function webcamSetup() {
   height = parseInt($('.webcam-wrapper').css('height'));
   console.log(height, width);
   const flip = false; // whether to flip the webcam
-  webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
+  webcam = new tmImage.Webcam(1280, 720, flip); // width, height, flip
   await webcam.setup(); // request access to the webcam
   await webcam.play();
 }
@@ -184,15 +184,7 @@ async function modelFactory(URL, enableDOM) {
   }
   new tfModel(URL, index, enableDOM);
 }
-// for testing
-async function addModelUrl() {
-  let URL = $('#modelLink').val();
-  if (validURL(URL)) {
-    await modelFactory(URL, true);
-  } else {
-    alert(URL + ' is not a valid url');
-  }
-}
+
 /**
   @param {String} URL -- link to teachable machines model
   @param {boolean} enableDOM -- true = create visualisation false = only prediction
@@ -224,5 +216,5 @@ function componentToHex(c) {
   return hex.length == 1 ? '0' + hex : hex;
 }
 $(document).ready(function() {
-  addModel('https://teachablemachine.withgoogle.com/models/N_aZhUzm/', true);
+  addModel('https://teachablemachine.withgoogle.com/models/N_aZhUzm/', false);
 });
