@@ -10,9 +10,8 @@
   transform: translate(10%, -50%);
 }
 .webcam-wrapper {
-  width: 1280px;
-  height: 780px;
-  border: solid whitesmoke;
+  width: 16em;
+  height: 9em;
   box-shadow: 0 0 2.5em whitesmoke;
   z-index: 1;
 }
@@ -24,4 +23,11 @@
   width: 40vw;
   top: 50%;
   transform: translate(0%, 10%);
+}
+
+@media (min-width: 2000px) {
+  .webcam-wrapper {
+    width: 1280px;
+    height: 780px;
+  }
 }

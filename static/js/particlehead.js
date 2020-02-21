@@ -1,3 +1,5 @@
+var keyVal = 'oldstoll';
+
 $(document).ready(function() {
   var face;
 
@@ -45,7 +47,9 @@ $(document).ready(function() {
 
     // model
     var loader = new THREE.OBJLoader(manager);
-    loader.load('/static/models/oldstoll.obj', function(object) {
+    var staticPath = '/static/models/';
+    //var modelDict = { 'No Object Detected': staticPath + 'old_stoll.obj', 'Piece of Metall': staticPath + 'eye.obj' };
+    loader.load(staticPath + 'old_stoll.obj', function(object) {
       object.traverse(function(child) {
         if (child instanceof THREE.Mesh) {
           // child.material.map = texture;

@@ -101,9 +101,7 @@ class tfModel {
       await this.predict();
     } else {
       await this.predictClassOnly().then(index => {
-        //
-        // was passier wenn die 90% überschritten werden
-        //
+        keyVal = index;
         console.log(index);
         //
         //
@@ -138,10 +136,8 @@ class tfModel {
       const classPrediction = prediction[i].probability.toFixed(2);
       if (classPrediction > 0.8) {
         //
-        return i;
-      } else {
-        // wenn nix über 90 % is
-        return 0;
+        console.log('50% reached' + i + className);
+        return i + className;
       }
     }
   }
@@ -171,7 +167,7 @@ async function webcamSetup() {
   height = parseInt($('.webcam-wrapper').css('height'));
   console.log(height, width);
   const flip = false; // whether to flip the webcam
-  webcam = new tmImage.Webcam(1280, 720, flip); // width, height, flip
+  webcam = new tmImage.Webcam(980, 580, flip); // width, height, flip
   await webcam.setup(); // request access to the webcam
   await webcam.play();
 }
