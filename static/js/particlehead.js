@@ -1,4 +1,8 @@
-var keyVal = 'oldstoll';
+var callIndex = 0;
+var staticPath = '/static/models/';
+var objects = ['old_stoll', 'eye'];
+var object1 = new THREE.Object3D();
+var object2 = new THREE.Object3D();
 
 $(document).ready(function() {
   var face;
@@ -18,9 +22,7 @@ $(document).ready(function() {
 
     var camera, scene, renderer;
 
-    var mouseX = 0,
-      mouseY = 0;
-    var p;
+    //var p;
 
     var windowHalfX = site.Width / 2;
     var windowHalfY = site.Height / 2;
@@ -47,32 +49,41 @@ $(document).ready(function() {
 
     // model
     var loader = new THREE.OBJLoader(manager);
-    var staticPath = '/static/models/';
-    //var modelDict = { 'No Object Detected': staticPath + 'old_stoll.obj', 'Piece of Metall': staticPath + 'eye.obj' };
-    loader.load(staticPath + 'old_stoll.obj', function(object) {
-      object.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          // child.material.map = texture;
+    function loadObjects() {
+      if (callIndex > objects.length - 1) return;
+      loader.load(
+        staticPath + objects[callIndex] + '.obj',
+        function(object) {
+          object.traverse(function(child) {
+            if (child instanceof THREE.Mesh) {
+              // child.material.map = texture;
 
-          var scale = 24;
+              var scale = 24;
 
-          $(child.geometry.vertices).each(function() {
-            p_geom.vertices.push(new THREE.Vector3(this.x * scale, this.y * scale, this.z * scale));
+              $(child.geometry.vertices).each(function() {
+                p_geom.vertices.push(new THREE.Vector3(this.x * scale, this.y * scale, this.z * scale));
+              });
+            }
           });
+
+          Background.scene.add(p);
+
+          callIndex++;
+          loadObjects();
+        },
+        function(xhr) {
+          console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
         }
-      });
-
-      Background.scene.add(p);
-    });
-
-    p = new THREE.ParticleSystem(p_geom, p_material);
+      );
+    }
+    loadObjects();
+    var p = new THREE.ParticleSystem(p_geom, p_material);
 
     Background.renderer = new THREE.WebGLRenderer({ alpha: true });
     Background.renderer.setSize(site.Width, site.Height);
     Background.renderer.setClearColor(0x000000, 0);
 
     $('.particlehead').append(Background.renderer.domElement);
-    $(document).on('mousemove', onDocumentMouseMove);
     $(window).on('resize', onWindowResize);
 
     function onWindowResize() {
@@ -86,24 +97,16 @@ $(document).ready(function() {
       Background.renderer.setSize(site.Width, site.Height);
     }
 
-    function onDocumentMouseMove(event) {
-      mouseX = (event.clientX - windowHalfX) / 2;
-      mouseY = (event.clientY - windowHalfY) / 2;
-    }
-
     Background.animate = function() {
+      p.rotation.y = Date.now() * 0.0005;
+      p.rotation.x = Date.now() * 0.0003;
       Background.ticker = TweenMax.ticker;
       Background.ticker.addEventListener('tick', Background.animate);
-
       render();
     };
 
     function render() {
-      Background.camera.position.x += -mouseX * 0.5 - Background.camera.position.x + 300;
-      Background.camera.position.y += mouseY - Background.camera.position.y;
-
       Background.camera.lookAt(Background.scene.position);
-
       Background.renderer.render(Background.scene, Background.camera);
     }
 
