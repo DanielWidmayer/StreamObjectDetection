@@ -6,6 +6,7 @@
 var index = 0;
 var test;
 var webcam;
+var lastIndex;
 // Load the image model and setup the webcam
 
 /**
@@ -101,15 +102,12 @@ class tfModel {
       await this.predict();
     } else {
       await this.predictClassOnly().then(index => {
-        keyVal = index;
         console.log(index);
-        //
-        //
-        //
-        //
-        //
-        //
-        //
+        if (index != lastIndex) {
+          lastIndex = index;
+          //loadParticle();
+          //console.log('changed');
+        }
       });
     }
     window.requestAnimationFrame(this.loop.bind(this));
@@ -134,12 +132,13 @@ class tfModel {
     for (let i = 0; i < this.maxPredictions; i++) {
       const className = prediction[i].className;
       const classPrediction = prediction[i].probability.toFixed(2);
-      if (classPrediction > 0.8) {
+      if (classPrediction > 0.9) {
         //
-        console.log('50% reached' + i + className);
+        //console.log('90% reached' + i + className);
         return i + className;
       }
     }
+    return '0No Object detected';
   }
 }
 async function createSetup() {
