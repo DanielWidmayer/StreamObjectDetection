@@ -162,13 +162,13 @@ async function webcamSetup() {
   // Convenience function to setup a webcam
   let width;
   let height;
-  width = parseInt($('.webcam-wrapper').css('width'));
-  height = parseInt($('.webcam-wrapper').css('height'));
-  console.log(height, width);
+  width = parseInt($('.streamWrapper').css('width'));
+  height = parseInt($('.streamWrapper').css('height'));
+  console.log(width, height);
   const flip = false; // whether to flip the webcam
-  webcam = new tmImage.Webcam(980, 580, flip); // width, height, flip
+  webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
   await webcam.setup(); // request access to the webcam
-  await webcam.play();
+  webcam.play();
 }
 async function modelFactory(URL, enableDOM) {
   if (enableDOM) {

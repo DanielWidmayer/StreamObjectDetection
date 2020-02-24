@@ -4,15 +4,15 @@
   width: 100%;
 }
 .streamWrapper {
+  width: 56em;
+  height: 31.5em; /*16:9 ratio*/
   color: aliceblue;
+  box-shadow: 0 0 2.5em whitesmoke;
   position: fixed;
   top: 50%;
   transform: translate(10%, -50%);
 }
 .webcam-wrapper {
-  width: 16em;
-  height: 9em;
-  box-shadow: 0 0 2.5em whitesmoke;
   z-index: 1;
 }
 .particlehead {
@@ -20,7 +20,7 @@
   z-index: 0;
   background-color: transparent;
   height: 90%;
-  width: 40vw;
+  width: 50vw;
   top: 50%;
   transform: translate(0%, 10%);
 }
