@@ -1,6 +1,6 @@
 var callIndex = 0;
 var staticPath = '/static/models/';
-var objects = ['besen', 'bottle', 'box', 'plastic_bag'];
+var objects = ['besen', 'bottle', 'box', 'metall_piece', 'plastic_bag'];
 var object1 = new THREE.Object3D();
 var object2 = new THREE.Object3D();
 
