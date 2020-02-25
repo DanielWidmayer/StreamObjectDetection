@@ -1,6 +1,6 @@
 var callIndex = 0;
 var staticPath = '/static/models/';
-var objects = ['besen', 'bottle', 'box', 'metall_piece', 'plastic_bag'];
+var objects = ['bottle_gripping', 'bottle', 'box', 'metall_piece', 'plastic_bag'];
 var object1 = new THREE.Object3D();
 var object2 = new THREE.Object3D();
 
@@ -54,7 +54,7 @@ $(document).ready(function() {
     // model
     var loader = new THREE.OBJLoader(manager);
     function loadObjects() {
-      if (callIndex > objects.length - 1) return;
+      if (callIndex > 4) return;
       loader.load(
         staticPath + objects[callIndex] + '.obj',
         function(object) {
@@ -74,10 +74,10 @@ $(document).ready(function() {
 
           callIndex++;
           loadObjects();
-        },
-        function(xhr) {
-          console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
-        }
+        } //  ,
+        // function(xhr) {
+        //   console.log((xhr.loaded / xhr.total) * 100 + '% loaded');
+        // }
       );
     }
     loadObjects();
@@ -102,8 +102,10 @@ $(document).ready(function() {
     }
 
     Background.animate = function() {
-      p.rotation.y = Date.now() * 0.001;
-      p.rotation.x = Date.now() * 0.0005;
+      console.log(p);
+      p.rotation.y = Date.now() * 0.0005;
+      p.rotation.x = Date.now() * 0.0001;
+
       Background.ticker = TweenMax.ticker;
       Background.ticker.addEventListener('tick', Background.animate);
       render();

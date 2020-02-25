@@ -7,7 +7,7 @@
   width: 56em;
   height: 31.5em; /*16:9 ratio*/
   color: aliceblue;
-  box-shadow: 0 0 2.5em whitesmoke;
+  box-shadow: 0 0 10em whitesmoke;
   position: fixed;
   top: 50%;
   transform: translate(10%, -50%);
@@ -22,7 +22,7 @@
   height: 90%;
   width: 50vw;
   top: 50%;
-  transform: translate(0%, 10%);
+  transform: translate(0%, 5%);
 }
 
 @media (min-width: 2000px) {
