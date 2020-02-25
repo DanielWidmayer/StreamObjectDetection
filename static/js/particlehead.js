@@ -1,6 +1,6 @@
 var callIndex = 0;
 var staticPath = '/static/models/';
-var objects = ['old_stoll', 'eye'];
+var objects = ['besen', 'bottle', 'box', 'plastic_bag'];
 var object1 = new THREE.Object3D();
 var object2 = new THREE.Object3D();
 
@@ -41,6 +41,10 @@ $(document).ready(function() {
     };
 
     // particles
+    // for (var i = 0; i < objects.length; i++) {
+    //   p_geom[i] = {};
+    //   p_geom[i] = new THREE.Geometry();
+    // }
     var p_geom = new THREE.Geometry();
     var p_material = new THREE.ParticleBasicMaterial({
       color: 0xffffff,
@@ -98,8 +102,8 @@ $(document).ready(function() {
     }
 
     Background.animate = function() {
-      p.rotation.y = Date.now() * 0.0005;
-      p.rotation.x = Date.now() * 0.0003;
+      p.rotation.y = Date.now() * 0.001;
+      p.rotation.x = Date.now() * 0.0005;
       Background.ticker = TweenMax.ticker;
       Background.ticker.addEventListener('tick', Background.animate);
       render();
