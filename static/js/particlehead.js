@@ -20,7 +20,7 @@ $(document).ready(function() {
       alert('Your browser doesnt support WebGL');
     }
 
-    var camera, scene, renderer;
+    // var camera, scene, renderer;
 
     //var p;
 
@@ -31,7 +31,12 @@ $(document).ready(function() {
     Background.camera.position.z = 350;
 
     // scene
-    Background.scene = new THREE.Scene();
+    // Background.scene = new THREE.Scene();
+    Background.scene0 = new THREE.Scene();
+    Background.scene1 = new THREE.Scene();
+    Background.scene2 = new THREE.Scene();
+    Background.scene3 = new THREE.Scene();
+    Background.scene4 = new THREE.Scene();
 
     // texture
     var manager = new THREE.LoadingManager();
@@ -52,12 +57,16 @@ $(document).ready(function() {
     });
 
     // model
+    // var p = [];
+    // var p_geom_init= new THREE.Geometry();
+    var p = new THREE.ParticleSystem(p_geom, p_material);;
     var loader = new THREE.OBJLoader(manager);
     function loadObjects() {
       if (callIndex > objects.length - 1) return;
       loader.load(
         staticPath + objects[callIndex] + '.obj',
         function(object) {
+          // var p_geom = new THREE.Geometry();
           object.traverse(function(child) {
             if (child instanceof THREE.Mesh) {
               // child.material.map = texture;
@@ -70,7 +79,31 @@ $(document).ready(function() {
             }
           });
 
-          Background.scene.add(p);
+          var tmp_p = new THREE.ParticleSystem(p_geom, p_material);
+          // p.push(tmp_p);
+          switch (callIndex) {
+            case 0: 
+            Background.scene0.add(tmp_p);
+            p = tmp_p;
+            break;
+            case 1: 
+            Background.scene1.add(tmp_p);
+            p = tmp_p;
+            break;
+            case 2: 
+            Background.scene2.add(tmp_p);
+            p = tmp_p;
+            break;
+            case 3: 
+            Background.scene3.add(tmp_p);
+            p = tmp_p;
+            break;
+            case 4: 
+            Background.scene4.add(tmp_p);
+            p = tmp_p;
+            break;
+          }
+          // Background.scene.add(tmp_p);    
 
           callIndex++;
           loadObjects();
@@ -81,7 +114,16 @@ $(document).ready(function() {
       );
     }
     loadObjects();
-    var p = new THREE.ParticleSystem(p_geom, p_material);
+    // choosing default scene
+    Background.scene = Background.scene0;
+    // var loadAiObject = function(jrs) {
+    //   Background.scene.add(p[jrs]);
+    // }
+
+    // loadAiObject(0);
+
+    // Background.scene.add(p[0]);
+    // var p = new THREE.ParticleSystem(p_geom, p_material);
 
     Background.renderer = new THREE.WebGLRenderer({ alpha: true });
     Background.renderer.setSize(site.Width, site.Height);
@@ -102,6 +144,7 @@ $(document).ready(function() {
     }
 
     Background.animate = function() {
+      // console.log(p.rotation);
       p.rotation.y = Date.now() * 0.001;
       p.rotation.x = Date.now() * 0.0005;
       Background.ticker = TweenMax.ticker;

@@ -102,7 +102,7 @@ class tfModel {
       await this.predict();
     } else {
       await this.predictClassOnly().then(index => {
-        console.log(index);
+        // console.log(index);
         if (index != lastIndex) {
           lastIndex = index;
           //loadParticle();
