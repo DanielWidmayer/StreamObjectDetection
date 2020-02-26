@@ -6,7 +6,6 @@
 var index = 0;
 var test;
 var webcam;
-var lastIndex;
 // Load the image model and setup the webcam
 
 /**
@@ -102,11 +101,8 @@ class tfModel {
       await this.predict();
     } else {
       await this.predictClassOnly().then(index => {
-        console.log(index);
-        if (index != lastIndex) {
-          lastIndex = index;
-          //loadParticle();
-          //console.log('changed');
+        if (objectsLoaded == true) {
+          callIndex = index;
         }
       });
     }
@@ -133,9 +129,8 @@ class tfModel {
       const className = prediction[i].className;
       const classPrediction = prediction[i].probability.toFixed(2);
       if (classPrediction > 0.9) {
-        //
-        //console.log('90% reached' + i + className);
-        return i + className;
+        //console.log(i + ':  ' + className);
+        return i; //+ className
       }
     }
     return '0No Object detected';
