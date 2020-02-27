@@ -25,6 +25,36 @@
   transform: translate(0%, 5%);
 }
 
+.headerStyle {
+  color: #0091dc;
+  font-size: 1.5em;
+}
+.basicStyle {
+  color: white;
+  font-size: 1.2 em;
+}
+p {
+  margin: 0;
+  padding: 0;
+}
+br {
+  display: block;
+  margin: 0 0;
+}
+.metadata {
+  font-family: 'Times New Roman', Times, serif;
+}
+#dustBrush,
+#Box,
+#metallPiece,
+#plasticBag,
+#bottle {
+  display: none;
+  position: absolute;
+  top: 75vh;
+  left: 10vw;
+}
+
 @media (min-width: 2000px) {
   .webcam-wrapper {
     width: 1280px;

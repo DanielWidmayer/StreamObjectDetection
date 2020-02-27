@@ -1,7 +1,8 @@
 var callIndex = 0;
 var objectsLoaded = false;
 var staticPath = '/static/models/';
-var objects = ['magnet', 'besen_render', 'box', 'metall_piece', 'plastic_bag', 'bottle'];
+var objects = ['logo', 'besen_render', 'box', 'metall_piece', 'plastic_bag', 'bottle'];
+var objects_grip = ['logoAI', 'gripping_besen', 'gripping_box', 'gripping_metall', 'gripping_bag', 'gripping_bottle'];
 
 $(document).ready(function() {
   var site = site || {};
@@ -20,6 +21,7 @@ $(document).ready(function() {
     var camera, scene, renderer;
 
     var p = [];
+    var p_grip = [];
 
     var windowHalfX = site.Width / 2;
     var windowHalfY = site.Height / 2;
@@ -40,9 +42,14 @@ $(document).ready(function() {
     };
 
     var p_geom = [];
+    var p_geom_grip = [];
     var p_material = new THREE.ParticleBasicMaterial({
       color: 0xffffff,
       size: 1.5
+    });
+    var p_material_grip = new THREE.ParticleBasicMaterial({
+      color: 0x0091dc,
+      size: 3
     });
 
     // model
@@ -53,6 +60,22 @@ $(document).ready(function() {
         objectsLoaded = true;
         return;
       }
+      //gripping
+      loader.load(staticPath + objects_grip[callIndex] + '.obj', function(object) {
+        object.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            p_geom_grip[callIndex] = new THREE.Geometry();
+            var scale = 24;
+            $(child.geometry.vertices).each(function() {
+              p_geom_grip[callIndex].vertices.push(new THREE.Vector3(this.x * scale, this.y * scale, this.z * scale));
+            });
+            p_grip[callIndex] = new THREE.ParticleSystem(p_geom_grip[callIndex], p_material_grip);
+          }
+        });
+        Background.scene[callIndex].add(p_grip[callIndex]);
+      });
+
+      // objects
       loader.load(staticPath + objects[callIndex] + '.obj', function(object) {
         object.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
@@ -80,7 +103,7 @@ $(document).ready(function() {
 
     $('.particlehead').append(Background.renderer.domElement);
     $(window).on('resize', onWindowResize);
-    $(window).on('click', onWindowClick);
+    //$(window).on('click', onWindowClick); //test purpose
 
     function onWindowResize() {
       windowHalfX = site.Width / 2;
@@ -93,18 +116,64 @@ $(document).ready(function() {
       Background.renderer.setSize(site.Width, site.Height);
     }
 
-    function onWindowClick() {
-      if (callIndex < objects.length - 1) {
-        callIndex++;
-      } else {
-        callIndex = 0;
-      }
-    }
+    // function onWindowClick() {
+    //   if (callIndex < objects.length - 1) {
+    //     callIndex++;
+    //   } else {
+    //     callIndex = 0;
+    //   }
+    // }
 
     Background.animate = function() {
-      if (typeof p[callIndex] !== 'undefined') {
+      if (callIndex != 0 && typeof p[callIndex] !== 'undefined' && typeof p_grip[callIndex] !== 'undefined') {
         p[callIndex].rotation.y = Date.now() * 0.0005;
         p[callIndex].rotation.x = Date.now() * 0.0001;
+        p_grip[callIndex].rotation.y = Date.now() * 0.0005;
+        p_grip[callIndex].rotation.x = Date.now() * 0.0001;
+      }
+      switch (callIndex) {
+        case 0:
+          document.getElementById('dustBrush').style.display = 'none';
+          document.getElementById('Box').style.display = 'none';
+          document.getElementById('metallPiece').style.display = 'none';
+          document.getElementById('plasticBag').style.display = 'none';
+          document.getElementById('bottle').style.display = 'none';
+          break;
+        case 1:
+          document.getElementById('dustBrush').style.display = 'block';
+          document.getElementById('Box').style.display = 'none';
+          document.getElementById('metallPiece').style.display = 'none';
+          document.getElementById('plasticBag').style.display = 'none';
+          document.getElementById('bottle').style.display = 'none';
+          break;
+        case 2:
+          document.getElementById('dustBrush').style.display = 'none';
+          document.getElementById('Box').style.display = 'block';
+          document.getElementById('metallPiece').style.display = 'none';
+          document.getElementById('plasticBag').style.display = 'none';
+          document.getElementById('bottle').style.display = 'none';
+          break;
+        case 3:
+          document.getElementById('dustBrush').style.display = 'none';
+          document.getElementById('Box').style.display = 'none';
+          document.getElementById('metallPiece').style.display = 'block';
+          document.getElementById('plasticBag').style.display = 'none';
+          document.getElementById('bottle').style.display = 'none';
+          break;
+        case 4:
+          document.getElementById('dustBrush').style.display = 'none';
+          document.getElementById('Box').style.display = 'none';
+          document.getElementById('metallPiece').style.display = 'none';
+          document.getElementById('plasticBag').style.display = 'block';
+          document.getElementById('bottle').style.display = 'none';
+          break;
+        case 5:
+          document.getElementById('dustBrush').style.display = 'none';
+          document.getElementById('Box').style.display = 'none';
+          document.getElementById('metallPiece').style.display = 'none';
+          document.getElementById('plasticBag').style.display = 'none';
+          document.getElementById('bottle').style.display = 'block';
+          break;
       }
       Background.ticker = TweenMax.ticker;
       Background.ticker.addEventListener('tick', Background.animate);
