@@ -1,7 +1,7 @@
 var callIndex = 0;
 var objectsLoaded = false;
 var staticPath = '/static/models/';
-var objects = ['magnet', 'besen', 'box', 'metall_piece', 'plastic_bag', 'bottle'];
+var objects = ['magnet', 'besen_render', 'box', 'metall_piece', 'plastic_bag', 'bottle'];
 
 $(document).ready(function() {
   var site = site || {};
