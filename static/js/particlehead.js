@@ -54,6 +54,8 @@ $(document).ready(function() {
 
     // model
     var loader = new THREE.OBJLoader(manager);
+    var loader2 = new THREE.OBJLoader(manager);
+
     function loadObjects() {
       if (callIndex > objects.length - 1) {
         callIndex = 0;
@@ -61,7 +63,7 @@ $(document).ready(function() {
         return;
       }
       //gripping
-      loader.load(staticPath + objects_grip[callIndex] + '.obj', function(object) {
+      loader2.load(staticPath + objects_grip[callIndex] + '.obj', function(object) {
         object.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             p_geom_grip[callIndex] = new THREE.Geometry();
