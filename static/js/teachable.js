@@ -128,7 +128,7 @@ class tfModel {
     for (let i = 0; i < this.maxPredictions; i++) {
       const className = prediction[i].className;
       const classPrediction = prediction[i].probability.toFixed(2);
-      if (classPrediction > 0.9) {
+      if (classPrediction > 0.95) {
         //console.log(i + ':  ' + className);
         return i; //+ className
       }
@@ -205,6 +205,10 @@ function componentToHex(c) {
   var hex = c.toString(16);
   return hex.length == 1 ? '0' + hex : hex;
 }
+// $(document).ready(function() {
+//   addModel('https://teachablemachine.withgoogle.com/models/N_aZhUzm/', false);
+// });
+
 $(document).ready(function() {
-  addModel('https://teachablemachine.withgoogle.com/models/N_aZhUzm/', false);
+  addModel('https://teachablemachine.withgoogle.com/models/cXicXXxX/', false);
 });
