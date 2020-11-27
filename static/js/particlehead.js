@@ -54,16 +54,10 @@ $(document).ready(function() {
 
     // model
     var loader = new THREE.OBJLoader(manager);
-    var loader2 = new THREE.OBJLoader(manager);
 
     function loadObjects() {
-      if (callIndex > objects.length - 1) {
-        callIndex = 0;
-        objectsLoaded = true;
-        return;
-      }
       //gripping
-      loader2.load(staticPath + objects_grip[callIndex] + '.obj', function(object) {
+      loader.load(staticPath + objects_grip[callIndex] + '.obj', function(object) {
         object.traverse(function(child) {
           if (child instanceof THREE.Mesh) {
             p_geom_grip[callIndex] = new THREE.Geometry();
@@ -94,7 +88,15 @@ $(document).ready(function() {
         Background.scene[callIndex].add(p[callIndex]);
 
         callIndex++;
-        loadObjects();
+        if (callIndex > objects.length - 1) {
+          callIndex = 5;
+          setTimeout(() => {
+            objectsLoaded = true;
+          }, 1000);
+          return;
+        }else{
+          loadObjects();
+        }
       });
     }
     loadObjects();
